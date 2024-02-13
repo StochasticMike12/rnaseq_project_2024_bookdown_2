@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 6 Análisis de datos | Proyecto Final Módulo 1: Análisis de datos de secuenciación masiva</title>
+  <meta name="description" content="<p>Proyecto final del módulo 1 “Análisis de datos de secuenciación masiva” del
+curso de Bioinformática y estadística 2 de la Licenciatura en Ciencias
+Genómicas.
+Este proyecto tiene como objetivo realizar un análisis estadístico de datos
+de RNA-seq utilizando diversos paquetes de R para finalmente llegar a
+conclusiones sobre el estudio a analizar.</p>" />
+  <meta name="generator" content="bookdown 0.37 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 6 Análisis de datos | Proyecto Final Módulo 1: Análisis de datos de secuenciación masiva" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="<p>Proyecto final del módulo 1 “Análisis de datos de secuenciación masiva” del
+curso de Bioinformática y estadística 2 de la Licenciatura en Ciencias
+Genómicas.
+Este proyecto tiene como objetivo realizar un análisis estadístico de datos
+de RNA-seq utilizando diversos paquetes de R para finalmente llegar a
+conclusiones sobre el estudio a analizar.</p>" />
+  <meta name="github-repo" content="https://github.com/StochasticMike12/rnaseq_project_2024" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 6 Análisis de datos | Proyecto Final Módulo 1: Análisis de datos de secuenciación masiva" />
+  
+  <meta name="twitter:description" content="<p>Proyecto final del módulo 1 “Análisis de datos de secuenciación masiva” del
+curso de Bioinformática y estadística 2 de la Licenciatura en Ciencias
+Genómicas.
+Este proyecto tiene como objetivo realizar un análisis estadístico de datos
+de RNA-seq utilizando diversos paquetes de R para finalmente llegar a
+conclusiones sobre el estudio a analizar.</p>" />
+  
+
+<meta name="author" content="Miguel Ángel Flores Varela" />
+
+
+<meta name="date" content="2024-02-12" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="normalización.html"/>
+<link rel="next" href="conclusiones.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">A Minimal Book Example</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Presentación</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#datos-de-trabajo"><i class="fa fa-check"></i><b>1.1</b> Datos de trabajo</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="librerías.html"><a href="librerías.html"><i class="fa fa-check"></i><b>2</b> Librerías</a></li>
+<li class="chapter" data-level="3" data-path="cargar-datos.html"><a href="cargar-datos.html"><i class="fa fa-check"></i><b>3</b> Cargar datos</a></li>
+<li class="chapter" data-level="4" data-path="procesamiento-de-datos.html"><a href="procesamiento-de-datos.html"><i class="fa fa-check"></i><b>4</b> Procesamiento de datos</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="procesamiento-de-datos.html"><a href="procesamiento-de-datos.html#fomateo"><i class="fa fa-check"></i><b>4.1</b> Fomateo</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="procesamiento-de-datos.html"><a href="procesamiento-de-datos.html#variable-categórica"><i class="fa fa-check"></i><b>4.1.1</b> Variable categórica</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="procesamiento-de-datos.html"><a href="procesamiento-de-datos.html#filtrado"><i class="fa fa-check"></i><b>4.2</b> Filtrado</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="normalización.html"><a href="normalización.html"><i class="fa fa-check"></i><b>5</b> Normalización</a></li>
+<li class="chapter" data-level="6" data-path="análisis-de-datos.html"><a href="análisis-de-datos.html"><i class="fa fa-check"></i><b>6</b> Análisis de datos</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="análisis-de-datos.html"><a href="análisis-de-datos.html#expresión-diferencial"><i class="fa fa-check"></i><b>6.1</b> Expresión diferencial</a></li>
+<li class="chapter" data-level="6.2" data-path="análisis-de-datos.html"><a href="análisis-de-datos.html#modelo-estadístico"><i class="fa fa-check"></i><b>6.2</b> Modelo estadístico</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="conclusiones.html"><a href="conclusiones.html"><i class="fa fa-check"></i><b>7</b> Conclusiones</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Proyecto Final Módulo 1: Análisis de datos de secuenciación masiva</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="análisis-de-datos" class="section level1 hasAnchor" number="6">
+<h1><span class="header-section-number">Chapter 6</span> Análisis de datos<a href="análisis-de-datos.html#análisis-de-datos" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="expresión-diferencial" class="section level2 hasAnchor" number="6.1">
+<h2><span class="header-section-number">6.1</span> Expresión diferencial<a href="análisis-de-datos.html#expresión-diferencial" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Visualizar la expresión diferencial de acuerdo a cada atributo.</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="análisis-de-datos.html#cb34-1" tabindex="-1"></a><span class="co"># Boxplot por tipo de célula.</span></span>
+<span id="cb34-2"><a href="análisis-de-datos.html#cb34-2" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">as.data.frame</span>(<span class="fu">colData</span>(rse_gene_SRP102444)), <span class="fu">aes</span>(<span class="at">y =</span> assigned_gene_prop, <span class="at">x =</span> edited_cell)) <span class="sc">+</span></span>
+<span id="cb34-3"><a href="análisis-de-datos.html#cb34-3" tabindex="-1"></a>    <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb34-4"><a href="análisis-de-datos.html#cb34-4" tabindex="-1"></a>    <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">20</span>) <span class="sc">+</span></span>
+<span id="cb34-5"><a href="análisis-de-datos.html#cb34-5" tabindex="-1"></a>    <span class="fu">ylab</span>(<span class="st">&quot;Assigned Gene Prop&quot;</span>) <span class="sc">+</span></span>
+<span id="cb34-6"><a href="análisis-de-datos.html#cb34-6" tabindex="-1"></a>    <span class="fu">xlab</span>(<span class="st">&quot;Edited cell&quot;</span>)</span></code></pre></div>
+<p><img src="main_files/figure-html/exp_df-1.png" width="672" /></p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="análisis-de-datos.html#cb35-1" tabindex="-1"></a><span class="co"># Boxplot por momento de infección</span></span>
+<span id="cb35-2"><a href="análisis-de-datos.html#cb35-2" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">as.data.frame</span>(<span class="fu">colData</span>(rse_gene_SRP102444)), <span class="fu">aes</span>(<span class="at">y =</span> assigned_gene_prop, <span class="at">x =</span> sra_attribute.hsv_1_infection)) <span class="sc">+</span></span>
+<span id="cb35-3"><a href="análisis-de-datos.html#cb35-3" tabindex="-1"></a>    <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb35-4"><a href="análisis-de-datos.html#cb35-4" tabindex="-1"></a>    <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">20</span>) <span class="sc">+</span></span>
+<span id="cb35-5"><a href="análisis-de-datos.html#cb35-5" tabindex="-1"></a>    <span class="fu">ylab</span>(<span class="st">&quot;Assigned Gene Prop&quot;</span>) <span class="sc">+</span></span>
+<span id="cb35-6"><a href="análisis-de-datos.html#cb35-6" tabindex="-1"></a>    <span class="fu">xlab</span>(<span class="st">&quot;Time infection&quot;</span>)</span></code></pre></div>
+<p><img src="main_files/figure-html/exp_df-2.png" width="672" /></p>
+</div>
+<div id="modelo-estadístico" class="section level2 hasAnchor" number="6.2">
+<h2><span class="header-section-number">6.2</span> Modelo estadístico<a href="análisis-de-datos.html#modelo-estadístico" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>De acuerdo a las observaciones previas es posible establecer un modelo estadístico utilizando las variables edited_cell e hsv_1_infection.</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="análisis-de-datos.html#cb36-1" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="sc">~</span> sra_attribute.hsv_1_infection <span class="sc">+</span> edited_cell <span class="sc">+</span> assigned_gene_prop,</span>
+<span id="cb36-2"><a href="análisis-de-datos.html#cb36-2" tabindex="-1"></a>                    <span class="at">data =</span> <span class="fu">colData</span>(rse_gene_SRP102444)</span>
+<span id="cb36-3"><a href="análisis-de-datos.html#cb36-3" tabindex="-1"></a>)</span>
+<span id="cb36-4"><a href="análisis-de-datos.html#cb36-4" tabindex="-1"></a><span class="fu">colnames</span>(mod)</span></code></pre></div>
+<pre><code>## [1] &quot;(Intercept)&quot;                                               
+## [2] &quot;sra_attribute.hsv_1_infectionInfected 4h before harvesting&quot;
+## [3] &quot;sra_attribute.hsv_1_infectionInfected 6h before harvesting&quot;
+## [4] &quot;sra_attribute.hsv_1_infectionUninfected&quot;                   
+## [5] &quot;edited_cellnot_edited&quot;                                     
+## [6] &quot;assigned_gene_prop&quot;</code></pre>
+<p>Analizar los datos estadísticos de la expresión diferencial.</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="análisis-de-datos.html#cb38-1" tabindex="-1"></a>vGene <span class="ot">&lt;-</span> <span class="fu">voom</span>(dge, mod, <span class="at">plot =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p><img src="main_files/figure-html/est_var_mean-1.png" width="672" /></p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="análisis-de-datos.html#cb39-1" tabindex="-1"></a><span class="co"># Ajustar datos</span></span>
+<span id="cb39-2"><a href="análisis-de-datos.html#cb39-2" tabindex="-1"></a>eb_results <span class="ot">&lt;-</span> <span class="fu">eBayes</span>(<span class="fu">lmFit</span>(vGene))</span>
+<span id="cb39-3"><a href="análisis-de-datos.html#cb39-3" tabindex="-1"></a></span>
+<span id="cb39-4"><a href="análisis-de-datos.html#cb39-4" tabindex="-1"></a>de_results <span class="ot">&lt;-</span> <span class="fu">topTable</span>(</span>
+<span id="cb39-5"><a href="análisis-de-datos.html#cb39-5" tabindex="-1"></a>    eb_results,</span>
+<span id="cb39-6"><a href="análisis-de-datos.html#cb39-6" tabindex="-1"></a>    <span class="at">coef =</span> <span class="dv">2</span>,</span>
+<span id="cb39-7"><a href="análisis-de-datos.html#cb39-7" tabindex="-1"></a>    <span class="at">number =</span> <span class="fu">nrow</span>(rse_gene_SRP102444),</span>
+<span id="cb39-8"><a href="análisis-de-datos.html#cb39-8" tabindex="-1"></a>    <span class="at">sort.by =</span> <span class="st">&quot;none&quot;</span></span>
+<span id="cb39-9"><a href="análisis-de-datos.html#cb39-9" tabindex="-1"></a>)</span>
+<span id="cb39-10"><a href="análisis-de-datos.html#cb39-10" tabindex="-1"></a><span class="fu">dim</span>(de_results)</span></code></pre></div>
+<pre><code>## [1] 31657    16</code></pre>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="análisis-de-datos.html#cb41-1" tabindex="-1"></a><span class="fu">head</span>(de_results)</span></code></pre></div>
+<pre><code>##                    source type bp_length phase           gene_id
+## ENSG00000223972.5  HAVANA gene      1735    NA ENSG00000223972.5
+## ENSG00000278267.1 ENSEMBL gene        68    NA ENSG00000278267.1
+## ENSG00000227232.5  HAVANA gene      1351    NA ENSG00000227232.5
+## ENSG00000243485.5  HAVANA gene      1021    NA ENSG00000243485.5
+## ENSG00000237613.2  HAVANA gene      1219    NA ENSG00000237613.2
+## ENSG00000239945.1  HAVANA gene      1319    NA ENSG00000239945.1
+##                                            gene_type    gene_name level
+## ENSG00000223972.5 transcribed_unprocessed_pseudogene      DDX11L1     2
+## ENSG00000278267.1                              miRNA    MIR6859-1     3
+## ENSG00000227232.5             unprocessed_pseudogene       WASH7P     2
+## ENSG00000243485.5                            lincRNA  MIR1302-2HG     2
+## ENSG00000237613.2                            lincRNA      FAM138A     2
+## ENSG00000239945.1                            lincRNA RP11-34P13.8     2
+##                            havana_gene               tag       logFC   AveExpr
+## ENSG00000223972.5 OTTHUMG00000000961.2              &lt;NA&gt;  1.25221709 -3.438753
+## ENSG00000278267.1                 &lt;NA&gt;              &lt;NA&gt; -0.45470084 -4.238099
+## ENSG00000227232.5 OTTHUMG00000000958.1              &lt;NA&gt;  0.06778948  2.298965
+## ENSG00000243485.5 OTTHUMG00000000959.2        ncRNA_host  0.83618857 -3.590023
+## ENSG00000237613.2 OTTHUMG00000000960.1              &lt;NA&gt;  0.39685734 -4.707564
+## ENSG00000239945.1 OTTHUMG00000001097.2 overlapping_locus  0.62329540 -4.327404
+##                            t    P.Value adj.P.Val         B
+## ENSG00000223972.5  2.1643355 0.04026904 0.3934559 -3.803283
+## ENSG00000278267.1 -0.9012728 0.37611126 0.8720104 -5.559589
+## ENSG00000227232.5  0.2834396 0.77919209 0.9623578 -6.472159
+## ENSG00000243485.5  1.4500252 0.15957895 0.6913647 -4.886226
+## ENSG00000237613.2  1.2598757 0.21943911 0.7671918 -5.264621
+## ENSG00000239945.1  1.4763372 0.15243657 0.6812576 -4.938413</code></pre>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="análisis-de-datos.html#cb43-1" tabindex="-1"></a><span class="co"># Visualizar resultados estadísticos</span></span>
+<span id="cb43-2"><a href="análisis-de-datos.html#cb43-2" tabindex="-1"></a><span class="fu">plotMA</span>(eb_results, <span class="at">coef =</span> <span class="dv">2</span>)</span></code></pre></div>
+<p><img src="main_files/figure-html/est_var_mean-2.png" width="672" /></p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="análisis-de-datos.html#cb44-1" tabindex="-1"></a><span class="fu">volcanoplot</span>(eb_results, <span class="at">coef =</span> <span class="dv">2</span>, <span class="at">highlight =</span> <span class="dv">3</span>, <span class="at">names =</span> de_results<span class="sc">$</span>gene_name)</span></code></pre></div>
+<p><img src="main_files/figure-html/est_var_mean-3.png" width="672" /></p>
+<p>En este último plot es posible observar los genes más expresados en células infectadas por el virus del herpes tipo 1.</p>
+<p>Analizar patrones de expresión de genes.</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="análisis-de-datos.html#cb45-1" tabindex="-1"></a><span class="co"># Extraer valores de los genes de interés</span></span>
+<span id="cb45-2"><a href="análisis-de-datos.html#cb45-2" tabindex="-1"></a>exprs_heatmap <span class="ot">&lt;-</span> vGene<span class="sc">$</span>E[<span class="fu">rank</span>(de_results<span class="sc">$</span>adj.P.Val) <span class="sc">&lt;=</span> <span class="dv">50</span>, ]</span>
+<span id="cb45-3"><a href="análisis-de-datos.html#cb45-3" tabindex="-1"></a></span>
+<span id="cb45-4"><a href="análisis-de-datos.html#cb45-4" tabindex="-1"></a><span class="co"># Crear una tabla con información de las muestras y con nombres de columnas más amigables</span></span>
+<span id="cb45-5"><a href="análisis-de-datos.html#cb45-5" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">colData</span>(rse_gene_SRP102444)[, <span class="fu">c</span>(<span class="st">&quot;sra_attribute.hsv_1_infection&quot;</span>, <span class="st">&quot;edited_cell&quot;</span>)])</span>
+<span id="cb45-6"><a href="análisis-de-datos.html#cb45-6" tabindex="-1"></a><span class="fu">colnames</span>(df) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Infection_time&quot;</span>, <span class="st">&quot;Cell_type&quot;</span>)</span>
+<span id="cb45-7"><a href="análisis-de-datos.html#cb45-7" tabindex="-1"></a></span>
+<span id="cb45-8"><a href="análisis-de-datos.html#cb45-8" tabindex="-1"></a><span class="co"># Cambiar los identificadores por los nombres de los genes.</span></span>
+<span id="cb45-9"><a href="análisis-de-datos.html#cb45-9" tabindex="-1"></a>nombres <span class="ot">&lt;-</span> <span class="fu">rownames</span>(de_results)</span>
+<span id="cb45-10"><a href="análisis-de-datos.html#cb45-10" tabindex="-1"></a><span class="fu">rownames</span>(exprs_heatmap) <span class="ot">&lt;-</span> de_results<span class="sc">$</span>gene_name[<span class="fu">match</span>(<span class="fu">rownames</span>(exprs_heatmap), nombres)]</span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="análisis-de-datos.html#cb46-1" tabindex="-1"></a><span class="co"># Realizar un heatmap</span></span>
+<span id="cb46-2"><a href="análisis-de-datos.html#cb46-2" tabindex="-1"></a><span class="fu">pheatmap</span>(</span>
+<span id="cb46-3"><a href="análisis-de-datos.html#cb46-3" tabindex="-1"></a>    exprs_heatmap,</span>
+<span id="cb46-4"><a href="análisis-de-datos.html#cb46-4" tabindex="-1"></a>    <span class="at">cluster_rows =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb46-5"><a href="análisis-de-datos.html#cb46-5" tabindex="-1"></a>    <span class="at">cluster_cols =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb46-6"><a href="análisis-de-datos.html#cb46-6" tabindex="-1"></a>    <span class="at">show_rownames =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb46-7"><a href="análisis-de-datos.html#cb46-7" tabindex="-1"></a>    <span class="at">show_colnames =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb46-8"><a href="análisis-de-datos.html#cb46-8" tabindex="-1"></a>    <span class="at">annotation_col =</span> df</span>
+<span id="cb46-9"><a href="análisis-de-datos.html#cb46-9" tabindex="-1"></a>)</span></code></pre></div>
+<p><img src="main_files/figure-html/heatmap-1.png" width="672" /></p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="análisis-de-datos.html#cb47-1" tabindex="-1"></a><span class="co"># Conviertiendo los grupos de infección en colores</span></span>
+<span id="cb47-2"><a href="análisis-de-datos.html#cb47-2" tabindex="-1"></a>col.group <span class="ot">&lt;-</span> df<span class="sc">$</span>Infection_time</span>
+<span id="cb47-3"><a href="análisis-de-datos.html#cb47-3" tabindex="-1"></a><span class="fu">levels</span>(col.group) <span class="ot">&lt;-</span> <span class="fu">brewer.pal</span>(<span class="fu">nlevels</span>(col.group), <span class="st">&quot;Set1&quot;</span>)</span>
+<span id="cb47-4"><a href="análisis-de-datos.html#cb47-4" tabindex="-1"></a></span>
+<span id="cb47-5"><a href="análisis-de-datos.html#cb47-5" tabindex="-1"></a>col.group <span class="ot">&lt;-</span> <span class="fu">as.character</span>(col.group)</span>
+<span id="cb47-6"><a href="análisis-de-datos.html#cb47-6" tabindex="-1"></a></span>
+<span id="cb47-7"><a href="análisis-de-datos.html#cb47-7" tabindex="-1"></a><span class="co"># MDS por momento de infección</span></span>
+<span id="cb47-8"><a href="análisis-de-datos.html#cb47-8" tabindex="-1"></a><span class="fu">plotMDS</span>(vGene<span class="sc">$</span>E, <span class="at">labels =</span> df<span class="sc">$</span>Infection_time, <span class="at">col =</span> col.group)</span></code></pre></div>
+<p><img src="main_files/figure-html/plots-1.png" width="672" /></p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="análisis-de-datos.html#cb48-1" tabindex="-1"></a><span class="co"># Conviertiendo los grupos de tipo de celula en colores</span></span>
+<span id="cb48-2"><a href="análisis-de-datos.html#cb48-2" tabindex="-1"></a>col.sex <span class="ot">&lt;-</span> df<span class="sc">$</span>Cell_type</span>
+<span id="cb48-3"><a href="análisis-de-datos.html#cb48-3" tabindex="-1"></a><span class="fu">levels</span>(col.sex) <span class="ot">&lt;-</span> <span class="fu">brewer.pal</span>(<span class="fu">nlevels</span>(col.sex), <span class="st">&quot;Dark2&quot;</span>)</span></code></pre></div>
+<pre><code>## Warning in brewer.pal(nlevels(col.sex), &quot;Dark2&quot;): minimal value for n is 3, returning requested palette with 3 different levels</code></pre>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="análisis-de-datos.html#cb50-1" tabindex="-1"></a>col.sex <span class="ot">&lt;-</span> <span class="fu">as.character</span>(col.sex)</span>
+<span id="cb50-2"><a href="análisis-de-datos.html#cb50-2" tabindex="-1"></a></span>
+<span id="cb50-3"><a href="análisis-de-datos.html#cb50-3" tabindex="-1"></a><span class="co"># MDS por tipo de célula</span></span>
+<span id="cb50-4"><a href="análisis-de-datos.html#cb50-4" tabindex="-1"></a><span class="fu">plotMDS</span>(vGene<span class="sc">$</span>E, <span class="at">labels =</span> df<span class="sc">$</span>Cell_type, <span class="at">col =</span> col.sex)</span></code></pre></div>
+<p><img src="main_files/figure-html/plots-2.png" width="672" /></p>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="normalización.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="conclusiones.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/index.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["_main.pdf", "_main.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

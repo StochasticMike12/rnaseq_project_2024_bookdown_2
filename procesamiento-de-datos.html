@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 4 Procesamiento de datos | Proyecto Final Módulo 1: Análisis de datos de secuenciación masiva</title>
+  <meta name="description" content="<p>Proyecto final del módulo 1 “Análisis de datos de secuenciación masiva” del
+curso de Bioinformática y estadística 2 de la Licenciatura en Ciencias
+Genómicas.
+Este proyecto tiene como objetivo realizar un análisis estadístico de datos
+de RNA-seq utilizando diversos paquetes de R para finalmente llegar a
+conclusiones sobre el estudio a analizar.</p>" />
+  <meta name="generator" content="bookdown 0.37 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 4 Procesamiento de datos | Proyecto Final Módulo 1: Análisis de datos de secuenciación masiva" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="<p>Proyecto final del módulo 1 “Análisis de datos de secuenciación masiva” del
+curso de Bioinformática y estadística 2 de la Licenciatura en Ciencias
+Genómicas.
+Este proyecto tiene como objetivo realizar un análisis estadístico de datos
+de RNA-seq utilizando diversos paquetes de R para finalmente llegar a
+conclusiones sobre el estudio a analizar.</p>" />
+  <meta name="github-repo" content="https://github.com/StochasticMike12/rnaseq_project_2024" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 4 Procesamiento de datos | Proyecto Final Módulo 1: Análisis de datos de secuenciación masiva" />
+  
+  <meta name="twitter:description" content="<p>Proyecto final del módulo 1 “Análisis de datos de secuenciación masiva” del
+curso de Bioinformática y estadística 2 de la Licenciatura en Ciencias
+Genómicas.
+Este proyecto tiene como objetivo realizar un análisis estadístico de datos
+de RNA-seq utilizando diversos paquetes de R para finalmente llegar a
+conclusiones sobre el estudio a analizar.</p>" />
+  
+
+<meta name="author" content="Miguel Ángel Flores Varela" />
+
+
+<meta name="date" content="2024-02-12" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="cargar-datos.html"/>
+<link rel="next" href="normalización.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">A Minimal Book Example</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Presentación</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#datos-de-trabajo"><i class="fa fa-check"></i><b>1.1</b> Datos de trabajo</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="librerías.html"><a href="librerías.html"><i class="fa fa-check"></i><b>2</b> Librerías</a></li>
+<li class="chapter" data-level="3" data-path="cargar-datos.html"><a href="cargar-datos.html"><i class="fa fa-check"></i><b>3</b> Cargar datos</a></li>
+<li class="chapter" data-level="4" data-path="procesamiento-de-datos.html"><a href="procesamiento-de-datos.html"><i class="fa fa-check"></i><b>4</b> Procesamiento de datos</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="procesamiento-de-datos.html"><a href="procesamiento-de-datos.html#fomateo"><i class="fa fa-check"></i><b>4.1</b> Fomateo</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="procesamiento-de-datos.html"><a href="procesamiento-de-datos.html#variable-categórica"><i class="fa fa-check"></i><b>4.1.1</b> Variable categórica</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="procesamiento-de-datos.html"><a href="procesamiento-de-datos.html#filtrado"><i class="fa fa-check"></i><b>4.2</b> Filtrado</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="normalización.html"><a href="normalización.html"><i class="fa fa-check"></i><b>5</b> Normalización</a></li>
+<li class="chapter" data-level="6" data-path="análisis-de-datos.html"><a href="análisis-de-datos.html"><i class="fa fa-check"></i><b>6</b> Análisis de datos</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="análisis-de-datos.html"><a href="análisis-de-datos.html#expresión-diferencial"><i class="fa fa-check"></i><b>6.1</b> Expresión diferencial</a></li>
+<li class="chapter" data-level="6.2" data-path="análisis-de-datos.html"><a href="análisis-de-datos.html#modelo-estadístico"><i class="fa fa-check"></i><b>6.2</b> Modelo estadístico</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="conclusiones.html"><a href="conclusiones.html"><i class="fa fa-check"></i><b>7</b> Conclusiones</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Proyecto Final Módulo 1: Análisis de datos de secuenciación masiva</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="procesamiento-de-datos" class="section level1 hasAnchor" number="4">
+<h1><span class="header-section-number">Chapter 4</span> Procesamiento de datos<a href="procesamiento-de-datos.html#procesamiento-de-datos" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="fomateo" class="section level2 hasAnchor" number="4.1">
+<h2><span class="header-section-number">4.1</span> Fomateo<a href="procesamiento-de-datos.html#fomateo" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Convertir las cuentas crudas a cuentas por lectura.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="procesamiento-de-datos.html#cb3-1" tabindex="-1"></a><span class="fu">assay</span>(rse_gene_SRP102444, <span class="st">&quot;counts&quot;</span>) <span class="ot">&lt;-</span> <span class="fu">compute_read_counts</span>(rse_gene_SRP102444)</span></code></pre></div>
+<p>Checar el número y propiedades de las muestras.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="procesamiento-de-datos.html#cb4-1" tabindex="-1"></a>rse_gene_SRP102444<span class="sc">$</span>sra.sample_attributes</span></code></pre></div>
+<pre><code>##  [1] &quot;4su treatment;;none|adapter sequence;;GATCGGAAGAGCACACGT|barcode;;CGATGTA|cell line;;HeLa|hsv-1 infection;;Uninfected|rna isolation;;total RNA|source_name;;HeLa cells&quot;                   
+##  [2] &quot;4su treatment;;none|adapter sequence;;GATCGGAAGAGCACACGT|barcode;;CAGATCA|cell line;;HeLa|hsv-1 infection;;Uninfected|rna isolation;;total RNA|source_name;;HeLa cells&quot;                   
+##  [3] &quot;4su treatment;;none|adapter sequence;;GATCGGAAGAGCACACGT|barcode;;TCACGAT|cell line;;HeLa|hsv-1 infection;;Uninfected|rna isolation;;total RNA|source_name;;HeLa cells&quot;                   
+##  [4] &quot;4su treatment;;none|adapter sequence;;GATCGGAAGAGCACACGT|barcode;;CAGTGAT|cell line;;HeLa|hsv-1 infection;;Uninfected|rna isolation;;total RNA|source_name;;HeLa cells&quot;                   
+##  [5] &quot;4su treatment;;none|adapter sequence;;GATCGGAAGAGCACACGT|barcode;;GATGTAT|cell line;;HeLa|hsv-1 infection;;Infected 2h before harvesting|rna isolation;;total RNA|source_name;;HeLa cells&quot;
+##  [6] &quot;4su treatment;;none|adapter sequence;;GATCGGAAGAGCACACGT|barcode;;CCAATAT|cell line;;HeLa|hsv-1 infection;;Infected 2h before harvesting|rna isolation;;total RNA|source_name;;HeLa cells&quot;
+##  [7] &quot;4su treatment;;none|adapter sequence;;GATCGGAAGAGCACACGT|barcode;;TAGGCAT|cell line;;HeLa|hsv-1 infection;;Infected 4h before harvesting|rna isolation;;total RNA|source_name;;HeLa cells&quot;
+##  [8] &quot;4su treatment;;none|adapter sequence;;GATCGGAAGAGCACACGT|barcode;;GACCAAT|cell line;;HeLa|hsv-1 infection;;Infected 6h before harvesting|rna isolation;;total RNA|source_name;;HeLa cells&quot;
+##  [9] &quot;4su treatment;;none|adapter sequence;;GATCGGAAGAGCACACGT|barcode;;CTTGAAT|cell line;;HeLa|hsv-1 infection;;Infected 6h before harvesting|rna isolation;;total RNA|source_name;;HeLa cells&quot;
+## [10] &quot;4su treatment;;none|adapter sequence;;GATCGGAAGAGCACACGT|barcode;;ATCAGAA|hsv-1 infection;;Uninfected|rna isolation;;total RNA|source_name;;HeLa koBBC3as 56D2 cells&quot;                     
+## [11] &quot;4su treatment;;none|adapter sequence;;GATCGGAAGAGCACACGT|barcode;;GTCAACA|hsv-1 infection;;Uninfected|rna isolation;;total RNA|source_name;;HeLa koBBC3as 56D2 cells&quot;                     
+## [12] &quot;4su treatment;;none|adapter sequence;;GATCGGAAGAGCACACGT|barcode;;AGCTTAT|hsv-1 infection;;Infected 2h before harvesting|rna isolation;;total RNA|source_name;;HeLa koBBC3as 56D2 cells&quot;  
+## [13] &quot;4su treatment;;none|adapter sequence;;GATCGGAAGAGCACACGT|barcode;;GTTCCGT|hsv-1 infection;;Infected 2h before harvesting|rna isolation;;total RNA|source_name;;HeLa koBBC3as 56D2 cells&quot;  
+## [14] &quot;4su treatment;;none|adapter sequence;;GATCGGAAGAGCACACGT|barcode;;GCTACAT|hsv-1 infection;;Infected 4h before harvesting|rna isolation;;total RNA|source_name;;HeLa koBBC3as 56D2 cells&quot;  
+## [15] &quot;4su treatment;;none|adapter sequence;;GATCGGAAGAGCACACGT|barcode;;TGTCAGA|hsv-1 infection;;Infected 4h before harvesting|rna isolation;;total RNA|source_name;;HeLa koBBC3as 56D2 cells&quot;  
+## [16] &quot;4su treatment;;none|adapter sequence;;GATCGGAAGAGCACACGT|barcode;;TTGTAAC|hsv-1 infection;;Infected 6h before harvesting|rna isolation;;total RNA|source_name;;HeLa koBBC3as 56D2 cells&quot;  
+## [17] &quot;4su treatment;;none|adapter sequence;;GATCGGAAGAGCACACGT|barcode;;CGTCCCG|hsv-1 infection;;Infected 6h before harvesting|rna isolation;;total RNA|source_name;;HeLa koBBC3as 56D2 cells&quot;  
+## [18] &quot;4su treatment;;none|adapter sequence;;GATCGGAAGAGCACACGT|barcode;;TCCGCAC|hsv-1 infection;;Uninfected|rna isolation;;total RNA|source_name;;HeLa koBBC3as 59F8 cells&quot;                     
+## [19] &quot;4su treatment;;none|adapter sequence;;GATCGGAAGAGCACACGT|barcode;;GTACGTA|hsv-1 infection;;Uninfected|rna isolation;;total RNA|source_name;;HeLa koBBC3as 59F8 cells&quot;                     
+## [20] &quot;4su treatment;;none|adapter sequence;;GATCGGAAGAGCACACGT|barcode;;TGAAACG|hsv-1 infection;;Infected 2h before harvesting|rna isolation;;total RNA|source_name;;HeLa koBBC3as 59F8 cells&quot;  
+## [21] &quot;4su treatment;;none|adapter sequence;;GATCGGAAGAGCACACGT|barcode;;AGTGGAT|hsv-1 infection;;Infected 2h before harvesting|rna isolation;;total RNA|source_name;;HeLa koBBC3as 59F8 cells&quot;  
+## [22] &quot;4su treatment;;none|adapter sequence;;GATCGGAAGAGCACACGT|barcode;;TGGCCTT|hsv-1 infection;;Infected 4h before harvesting|rna isolation;;total RNA|source_name;;HeLa koBBC3as 59F8 cells&quot;  
+## [23] &quot;4su treatment;;none|adapter sequence;;GATCGGAAGAGCACACGT|barcode;;CTGATAT|hsv-1 infection;;Infected 4h before harvesting|rna isolation;;total RNA|source_name;;HeLa koBBC3as 59F8 cells&quot;  
+## [24] &quot;4su treatment;;none|adapter sequence;;GATCGGAAGAGCACACGT|barcode;;TTTCGGA|hsv-1 infection;;Infected 6h before harvesting|rna isolation;;total RNA|source_name;;HeLa koBBC3as 59F8 cells&quot;  
+## [25] &quot;4su treatment;;none|adapter sequence;;GATCGGAAGAGCACACGT|barcode;;TTCCTTT|hsv-1 infection;;Infected 6h before harvesting|rna isolation;;total RNA|source_name;;HeLa koBBC3as 59F8 cells&quot;  
+## [26] &quot;4su treatment;;none|adapter sequence;;GATCGGAAGAGCACACGT|barcode;;AGATCAT|cell line;;HeLa|hsv-1 infection;;Infected 4h before harvesting|rna isolation;;total RNA|source_name;;HeLa cells&quot;</code></pre>
+<p>Existen 26 muestras.</p>
+<p>Verificar que los atributos de las muestras sean consistentes.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="procesamiento-de-datos.html#cb6-1" tabindex="-1"></a>objeto <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">26</span></span>
+<span id="cb6-2"><a href="procesamiento-de-datos.html#cb6-2" tabindex="-1"></a><span class="cf">for</span>(elemento <span class="cf">in</span> objeto) {</span>
+<span id="cb6-3"><a href="procesamiento-de-datos.html#cb6-3" tabindex="-1"></a>    <span class="fu">print</span>(elemento)</span>
+<span id="cb6-4"><a href="procesamiento-de-datos.html#cb6-4" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">glimpse</span>(<span class="fu">strsplit</span>(rse_gene_SRP102444<span class="sc">$</span>sra.sample_attributes[elemento], <span class="st">&quot;</span><span class="sc">\\</span><span class="st">|&quot;</span>)))</span>
+<span id="cb6-5"><a href="procesamiento-de-datos.html#cb6-5" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>## [1] 1
+## List of 1
+##  $ : chr [1:7] &quot;4su treatment;;none&quot; &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;CGATGTA&quot; &quot;cell line;;HeLa&quot; ...
+## [[1]]
+## [1] &quot;4su treatment;;none&quot;                 
+## [2] &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot;
+## [3] &quot;barcode;;CGATGTA&quot;                    
+## [4] &quot;cell line;;HeLa&quot;                     
+## [5] &quot;hsv-1 infection;;Uninfected&quot;         
+## [6] &quot;rna isolation;;total RNA&quot;            
+## [7] &quot;source_name;;HeLa cells&quot;             
+## 
+## [1] 2
+## List of 1
+##  $ : chr [1:7] &quot;4su treatment;;none&quot; &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;CAGATCA&quot; &quot;cell line;;HeLa&quot; ...
+## [[1]]
+## [1] &quot;4su treatment;;none&quot;                 
+## [2] &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot;
+## [3] &quot;barcode;;CAGATCA&quot;                    
+## [4] &quot;cell line;;HeLa&quot;                     
+## [5] &quot;hsv-1 infection;;Uninfected&quot;         
+## [6] &quot;rna isolation;;total RNA&quot;            
+## [7] &quot;source_name;;HeLa cells&quot;             
+## 
+## [1] 3
+## List of 1
+##  $ : chr [1:7] &quot;4su treatment;;none&quot; &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;TCACGAT&quot; &quot;cell line;;HeLa&quot; ...
+## [[1]]
+## [1] &quot;4su treatment;;none&quot;                 
+## [2] &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot;
+## [3] &quot;barcode;;TCACGAT&quot;                    
+## [4] &quot;cell line;;HeLa&quot;                     
+## [5] &quot;hsv-1 infection;;Uninfected&quot;         
+## [6] &quot;rna isolation;;total RNA&quot;            
+## [7] &quot;source_name;;HeLa cells&quot;             
+## 
+## [1] 4
+## List of 1
+##  $ : chr [1:7] &quot;4su treatment;;none&quot; &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;CAGTGAT&quot; &quot;cell line;;HeLa&quot; ...
+## [[1]]
+## [1] &quot;4su treatment;;none&quot;                 
+## [2] &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot;
+## [3] &quot;barcode;;CAGTGAT&quot;                    
+## [4] &quot;cell line;;HeLa&quot;                     
+## [5] &quot;hsv-1 infection;;Uninfected&quot;         
+## [6] &quot;rna isolation;;total RNA&quot;            
+## [7] &quot;source_name;;HeLa cells&quot;             
+## 
+## [1] 5
+## List of 1
+##  $ : chr [1:7] &quot;4su treatment;;none&quot; &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;GATGTAT&quot; &quot;cell line;;HeLa&quot; ...
+## [[1]]
+## [1] &quot;4su treatment;;none&quot;                           
+## [2] &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;GATGTAT&quot;                              
+## [4] &quot;cell line;;HeLa&quot;                               
+## [5] &quot;hsv-1 infection;;Infected 2h before harvesting&quot;
+## [6] &quot;rna isolation;;total RNA&quot;                      
+## [7] &quot;source_name;;HeLa cells&quot;                       
+## 
+## [1] 6
+## List of 1
+##  $ : chr [1:7] &quot;4su treatment;;none&quot; &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;CCAATAT&quot; &quot;cell line;;HeLa&quot; ...
+## [[1]]
+## [1] &quot;4su treatment;;none&quot;                           
+## [2] &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;CCAATAT&quot;                              
+## [4] &quot;cell line;;HeLa&quot;                               
+## [5] &quot;hsv-1 infection;;Infected 2h before harvesting&quot;
+## [6] &quot;rna isolation;;total RNA&quot;                      
+## [7] &quot;source_name;;HeLa cells&quot;                       
+## 
+## [1] 7
+## List of 1
+##  $ : chr [1:7] &quot;4su treatment;;none&quot; &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;TAGGCAT&quot; &quot;cell line;;HeLa&quot; ...
+## [[1]]
+## [1] &quot;4su treatment;;none&quot;                           
+## [2] &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;TAGGCAT&quot;                              
+## [4] &quot;cell line;;HeLa&quot;                               
+## [5] &quot;hsv-1 infection;;Infected 4h before harvesting&quot;
+## [6] &quot;rna isolation;;total RNA&quot;                      
+## [7] &quot;source_name;;HeLa cells&quot;                       
+## 
+## [1] 8
+## List of 1
+##  $ : chr [1:7] &quot;4su treatment;;none&quot; &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;GACCAAT&quot; &quot;cell line;;HeLa&quot; ...
+## [[1]]
+## [1] &quot;4su treatment;;none&quot;                           
+## [2] &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;GACCAAT&quot;                              
+## [4] &quot;cell line;;HeLa&quot;                               
+## [5] &quot;hsv-1 infection;;Infected 6h before harvesting&quot;
+## [6] &quot;rna isolation;;total RNA&quot;                      
+## [7] &quot;source_name;;HeLa cells&quot;                       
+## 
+## [1] 9
+## List of 1
+##  $ : chr [1:7] &quot;4su treatment;;none&quot; &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;CTTGAAT&quot; &quot;cell line;;HeLa&quot; ...
+## [[1]]
+## [1] &quot;4su treatment;;none&quot;                           
+## [2] &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;CTTGAAT&quot;                              
+## [4] &quot;cell line;;HeLa&quot;                               
+## [5] &quot;hsv-1 infection;;Infected 6h before harvesting&quot;
+## [6] &quot;rna isolation;;total RNA&quot;                      
+## [7] &quot;source_name;;HeLa cells&quot;                       
+## 
+## [1] 10
+## List of 1
+##  $ : chr [1:6] &quot;4su treatment;;none&quot; &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;ATCAGAA&quot; &quot;hsv-1 infection;;Uninfected&quot; ...
+## [[1]]
+## [1] &quot;4su treatment;;none&quot;                  
+## [2] &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot; 
+## [3] &quot;barcode;;ATCAGAA&quot;                     
+## [4] &quot;hsv-1 infection;;Uninfected&quot;          
+## [5] &quot;rna isolation;;total RNA&quot;             
+## [6] &quot;source_name;;HeLa koBBC3as 56D2 cells&quot;
+## 
+## [1] 11
+## List of 1
+##  $ : chr [1:6] &quot;4su treatment;;none&quot; &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;GTCAACA&quot; &quot;hsv-1 infection;;Uninfected&quot; ...
+## [[1]]
+## [1] &quot;4su treatment;;none&quot;                  
+## [2] &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot; 
+## [3] &quot;barcode;;GTCAACA&quot;                     
+## [4] &quot;hsv-1 infection;;Uninfected&quot;          
+## [5] &quot;rna isolation;;total RNA&quot;             
+## [6] &quot;source_name;;HeLa koBBC3as 56D2 cells&quot;
+## 
+## [1] 12
+## List of 1
+##  $ : chr [1:6] &quot;4su treatment;;none&quot; &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;AGCTTAT&quot; &quot;hsv-1 infection;;Infected 2h before harvesting&quot; ...
+## [[1]]
+## [1] &quot;4su treatment;;none&quot;                           
+## [2] &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;AGCTTAT&quot;                              
+## [4] &quot;hsv-1 infection;;Infected 2h before harvesting&quot;
+## [5] &quot;rna isolation;;total RNA&quot;                      
+## [6] &quot;source_name;;HeLa koBBC3as 56D2 cells&quot;         
+## 
+## [1] 13
+## List of 1
+##  $ : chr [1:6] &quot;4su treatment;;none&quot; &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;GTTCCGT&quot; &quot;hsv-1 infection;;Infected 2h before harvesting&quot; ...
+## [[1]]
+## [1] &quot;4su treatment;;none&quot;                           
+## [2] &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;GTTCCGT&quot;                              
+## [4] &quot;hsv-1 infection;;Infected 2h before harvesting&quot;
+## [5] &quot;rna isolation;;total RNA&quot;                      
+## [6] &quot;source_name;;HeLa koBBC3as 56D2 cells&quot;         
+## 
+## [1] 14
+## List of 1
+##  $ : chr [1:6] &quot;4su treatment;;none&quot; &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;GCTACAT&quot; &quot;hsv-1 infection;;Infected 4h before harvesting&quot; ...
+## [[1]]
+## [1] &quot;4su treatment;;none&quot;                           
+## [2] &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;GCTACAT&quot;                              
+## [4] &quot;hsv-1 infection;;Infected 4h before harvesting&quot;
+## [5] &quot;rna isolation;;total RNA&quot;                      
+## [6] &quot;source_name;;HeLa koBBC3as 56D2 cells&quot;         
+## 
+## [1] 15
+## List of 1
+##  $ : chr [1:6] &quot;4su treatment;;none&quot; &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;TGTCAGA&quot; &quot;hsv-1 infection;;Infected 4h before harvesting&quot; ...
+## [[1]]
+## [1] &quot;4su treatment;;none&quot;                           
+## [2] &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;TGTCAGA&quot;                              
+## [4] &quot;hsv-1 infection;;Infected 4h before harvesting&quot;
+## [5] &quot;rna isolation;;total RNA&quot;                      
+## [6] &quot;source_name;;HeLa koBBC3as 56D2 cells&quot;         
+## 
+## [1] 16
+## List of 1
+##  $ : chr [1:6] &quot;4su treatment;;none&quot; &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;TTGTAAC&quot; &quot;hsv-1 infection;;Infected 6h before harvesting&quot; ...
+## [[1]]
+## [1] &quot;4su treatment;;none&quot;                           
+## [2] &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;TTGTAAC&quot;                              
+## [4] &quot;hsv-1 infection;;Infected 6h before harvesting&quot;
+## [5] &quot;rna isolation;;total RNA&quot;                      
+## [6] &quot;source_name;;HeLa koBBC3as 56D2 cells&quot;         
+## 
+## [1] 17
+## List of 1
+##  $ : chr [1:6] &quot;4su treatment;;none&quot; &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;CGTCCCG&quot; &quot;hsv-1 infection;;Infected 6h before harvesting&quot; ...
+## [[1]]
+## [1] &quot;4su treatment;;none&quot;                           
+## [2] &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;CGTCCCG&quot;                              
+## [4] &quot;hsv-1 infection;;Infected 6h before harvesting&quot;
+## [5] &quot;rna isolation;;total RNA&quot;                      
+## [6] &quot;source_name;;HeLa koBBC3as 56D2 cells&quot;         
+## 
+## [1] 18
+## List of 1
+##  $ : chr [1:6] &quot;4su treatment;;none&quot; &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;TCCGCAC&quot; &quot;hsv-1 infection;;Uninfected&quot; ...
+## [[1]]
+## [1] &quot;4su treatment;;none&quot;                  
+## [2] &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot; 
+## [3] &quot;barcode;;TCCGCAC&quot;                     
+## [4] &quot;hsv-1 infection;;Uninfected&quot;          
+## [5] &quot;rna isolation;;total RNA&quot;             
+## [6] &quot;source_name;;HeLa koBBC3as 59F8 cells&quot;
+## 
+## [1] 19
+## List of 1
+##  $ : chr [1:6] &quot;4su treatment;;none&quot; &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;GTACGTA&quot; &quot;hsv-1 infection;;Uninfected&quot; ...
+## [[1]]
+## [1] &quot;4su treatment;;none&quot;                  
+## [2] &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot; 
+## [3] &quot;barcode;;GTACGTA&quot;                     
+## [4] &quot;hsv-1 infection;;Uninfected&quot;          
+## [5] &quot;rna isolation;;total RNA&quot;             
+## [6] &quot;source_name;;HeLa koBBC3as 59F8 cells&quot;
+## 
+## [1] 20
+## List of 1
+##  $ : chr [1:6] &quot;4su treatment;;none&quot; &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;TGAAACG&quot; &quot;hsv-1 infection;;Infected 2h before harvesting&quot; ...
+## [[1]]
+## [1] &quot;4su treatment;;none&quot;                           
+## [2] &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;TGAAACG&quot;                              
+## [4] &quot;hsv-1 infection;;Infected 2h before harvesting&quot;
+## [5] &quot;rna isolation;;total RNA&quot;                      
+## [6] &quot;source_name;;HeLa koBBC3as 59F8 cells&quot;         
+## 
+## [1] 21
+## List of 1
+##  $ : chr [1:6] &quot;4su treatment;;none&quot; &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;AGTGGAT&quot; &quot;hsv-1 infection;;Infected 2h before harvesting&quot; ...
+## [[1]]
+## [1] &quot;4su treatment;;none&quot;                           
+## [2] &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;AGTGGAT&quot;                              
+## [4] &quot;hsv-1 infection;;Infected 2h before harvesting&quot;
+## [5] &quot;rna isolation;;total RNA&quot;                      
+## [6] &quot;source_name;;HeLa koBBC3as 59F8 cells&quot;         
+## 
+## [1] 22
+## List of 1
+##  $ : chr [1:6] &quot;4su treatment;;none&quot; &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;TGGCCTT&quot; &quot;hsv-1 infection;;Infected 4h before harvesting&quot; ...
+## [[1]]
+## [1] &quot;4su treatment;;none&quot;                           
+## [2] &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;TGGCCTT&quot;                              
+## [4] &quot;hsv-1 infection;;Infected 4h before harvesting&quot;
+## [5] &quot;rna isolation;;total RNA&quot;                      
+## [6] &quot;source_name;;HeLa koBBC3as 59F8 cells&quot;         
+## 
+## [1] 23
+## List of 1
+##  $ : chr [1:6] &quot;4su treatment;;none&quot; &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;CTGATAT&quot; &quot;hsv-1 infection;;Infected 4h before harvesting&quot; ...
+## [[1]]
+## [1] &quot;4su treatment;;none&quot;                           
+## [2] &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;CTGATAT&quot;                              
+## [4] &quot;hsv-1 infection;;Infected 4h before harvesting&quot;
+## [5] &quot;rna isolation;;total RNA&quot;                      
+## [6] &quot;source_name;;HeLa koBBC3as 59F8 cells&quot;         
+## 
+## [1] 24
+## List of 1
+##  $ : chr [1:6] &quot;4su treatment;;none&quot; &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;TTTCGGA&quot; &quot;hsv-1 infection;;Infected 6h before harvesting&quot; ...
+## [[1]]
+## [1] &quot;4su treatment;;none&quot;                           
+## [2] &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;TTTCGGA&quot;                              
+## [4] &quot;hsv-1 infection;;Infected 6h before harvesting&quot;
+## [5] &quot;rna isolation;;total RNA&quot;                      
+## [6] &quot;source_name;;HeLa koBBC3as 59F8 cells&quot;         
+## 
+## [1] 25
+## List of 1
+##  $ : chr [1:6] &quot;4su treatment;;none&quot; &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;TTCCTTT&quot; &quot;hsv-1 infection;;Infected 6h before harvesting&quot; ...
+## [[1]]
+## [1] &quot;4su treatment;;none&quot;                           
+## [2] &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;TTCCTTT&quot;                              
+## [4] &quot;hsv-1 infection;;Infected 6h before harvesting&quot;
+## [5] &quot;rna isolation;;total RNA&quot;                      
+## [6] &quot;source_name;;HeLa koBBC3as 59F8 cells&quot;         
+## 
+## [1] 26
+## List of 1
+##  $ : chr [1:7] &quot;4su treatment;;none&quot; &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;AGATCAT&quot; &quot;cell line;;HeLa&quot; ...
+## [[1]]
+## [1] &quot;4su treatment;;none&quot;                           
+## [2] &quot;adapter sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;AGATCAT&quot;                              
+## [4] &quot;cell line;;HeLa&quot;                               
+## [5] &quot;hsv-1 infection;;Infected 4h before harvesting&quot;
+## [6] &quot;rna isolation;;total RNA&quot;                      
+## [7] &quot;source_name;;HeLa cells&quot;</code></pre>
+<p>Como se puede apreciar hay algunas muestras que no tienen el atributo “cell line”, por lo que serán removidas.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="procesamiento-de-datos.html#cb8-1" tabindex="-1"></a>rse_gene_SRP102444<span class="sc">$</span>sra.sample_attributes <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot;cell line;;HeLa</span><span class="sc">\\</span><span class="st">|&quot;</span>, <span class="st">&quot;&quot;</span>, rse_gene_SRP102444<span class="sc">$</span>sra.sample_attributes)</span></code></pre></div>
+<p>También podemos darnos cuenta de que algunos atributos tienen espacios en sus nombre por lo que se renombrarán para evitar problemas con sus nombres posteriormente en el análisis.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="procesamiento-de-datos.html#cb9-1" tabindex="-1"></a>rse_gene_SRP102444<span class="sc">$</span>sra.sample_attributes<span class="ot">&lt;-</span><span class="fu">gsub</span>(<span class="st">&quot;4su treatment&quot;</span>, <span class="st">&quot;4su_treatment&quot;</span>, rse_gene_SRP102444<span class="sc">$</span>sra.sample_attributes)</span>
+<span id="cb9-2"><a href="procesamiento-de-datos.html#cb9-2" tabindex="-1"></a>rse_gene_SRP102444<span class="sc">$</span>sra.sample_attributes<span class="ot">&lt;-</span><span class="fu">gsub</span>(<span class="st">&quot;adapter sequence&quot;</span>, <span class="st">&quot;adapter_sequence&quot;</span>, rse_gene_SRP102444<span class="sc">$</span>sra.sample_attributes)</span>
+<span id="cb9-3"><a href="procesamiento-de-datos.html#cb9-3" tabindex="-1"></a>rse_gene_SRP102444<span class="sc">$</span>sra.sample_attributes<span class="ot">&lt;-</span><span class="fu">gsub</span>(<span class="st">&quot;hsv-1 infection&quot;</span>, <span class="st">&quot;hsv_1_infection&quot;</span>, rse_gene_SRP102444<span class="sc">$</span>sra.sample_attributes)</span>
+<span id="cb9-4"><a href="procesamiento-de-datos.html#cb9-4" tabindex="-1"></a>rse_gene_SRP102444<span class="sc">$</span>sra.sample_attributes<span class="ot">&lt;-</span><span class="fu">gsub</span>(<span class="st">&quot;rna isolation&quot;</span>, <span class="st">&quot;rna_isolation&quot;</span>, rse_gene_SRP102444<span class="sc">$</span>sra.sample_attributes)</span></code></pre></div>
+<p>Ahora podemos observar que todas las muestras tienen los mismos atributos</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="procesamiento-de-datos.html#cb10-1" tabindex="-1"></a><span class="cf">for</span>(elemento <span class="cf">in</span> objeto) {</span>
+<span id="cb10-2"><a href="procesamiento-de-datos.html#cb10-2" tabindex="-1"></a>    <span class="fu">print</span>(elemento)</span>
+<span id="cb10-3"><a href="procesamiento-de-datos.html#cb10-3" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">glimpse</span>(<span class="fu">strsplit</span>(rse_gene_SRP102444<span class="sc">$</span>sra.sample_attributes[elemento], <span class="st">&quot;</span><span class="sc">\\</span><span class="st">|&quot;</span>)))</span>
+<span id="cb10-4"><a href="procesamiento-de-datos.html#cb10-4" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>## [1] 1
+## List of 1
+##  $ : chr [1:6] &quot;4su_treatment;;none&quot; &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;CGATGTA&quot; &quot;hsv_1_infection;;Uninfected&quot; ...
+## [[1]]
+## [1] &quot;4su_treatment;;none&quot;                 
+## [2] &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot;
+## [3] &quot;barcode;;CGATGTA&quot;                    
+## [4] &quot;hsv_1_infection;;Uninfected&quot;         
+## [5] &quot;rna_isolation;;total RNA&quot;            
+## [6] &quot;source_name;;HeLa cells&quot;             
+## 
+## [1] 2
+## List of 1
+##  $ : chr [1:6] &quot;4su_treatment;;none&quot; &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;CAGATCA&quot; &quot;hsv_1_infection;;Uninfected&quot; ...
+## [[1]]
+## [1] &quot;4su_treatment;;none&quot;                 
+## [2] &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot;
+## [3] &quot;barcode;;CAGATCA&quot;                    
+## [4] &quot;hsv_1_infection;;Uninfected&quot;         
+## [5] &quot;rna_isolation;;total RNA&quot;            
+## [6] &quot;source_name;;HeLa cells&quot;             
+## 
+## [1] 3
+## List of 1
+##  $ : chr [1:6] &quot;4su_treatment;;none&quot; &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;TCACGAT&quot; &quot;hsv_1_infection;;Uninfected&quot; ...
+## [[1]]
+## [1] &quot;4su_treatment;;none&quot;                 
+## [2] &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot;
+## [3] &quot;barcode;;TCACGAT&quot;                    
+## [4] &quot;hsv_1_infection;;Uninfected&quot;         
+## [5] &quot;rna_isolation;;total RNA&quot;            
+## [6] &quot;source_name;;HeLa cells&quot;             
+## 
+## [1] 4
+## List of 1
+##  $ : chr [1:6] &quot;4su_treatment;;none&quot; &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;CAGTGAT&quot; &quot;hsv_1_infection;;Uninfected&quot; ...
+## [[1]]
+## [1] &quot;4su_treatment;;none&quot;                 
+## [2] &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot;
+## [3] &quot;barcode;;CAGTGAT&quot;                    
+## [4] &quot;hsv_1_infection;;Uninfected&quot;         
+## [5] &quot;rna_isolation;;total RNA&quot;            
+## [6] &quot;source_name;;HeLa cells&quot;             
+## 
+## [1] 5
+## List of 1
+##  $ : chr [1:6] &quot;4su_treatment;;none&quot; &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;GATGTAT&quot; &quot;hsv_1_infection;;Infected 2h before harvesting&quot; ...
+## [[1]]
+## [1] &quot;4su_treatment;;none&quot;                           
+## [2] &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;GATGTAT&quot;                              
+## [4] &quot;hsv_1_infection;;Infected 2h before harvesting&quot;
+## [5] &quot;rna_isolation;;total RNA&quot;                      
+## [6] &quot;source_name;;HeLa cells&quot;                       
+## 
+## [1] 6
+## List of 1
+##  $ : chr [1:6] &quot;4su_treatment;;none&quot; &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;CCAATAT&quot; &quot;hsv_1_infection;;Infected 2h before harvesting&quot; ...
+## [[1]]
+## [1] &quot;4su_treatment;;none&quot;                           
+## [2] &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;CCAATAT&quot;                              
+## [4] &quot;hsv_1_infection;;Infected 2h before harvesting&quot;
+## [5] &quot;rna_isolation;;total RNA&quot;                      
+## [6] &quot;source_name;;HeLa cells&quot;                       
+## 
+## [1] 7
+## List of 1
+##  $ : chr [1:6] &quot;4su_treatment;;none&quot; &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;TAGGCAT&quot; &quot;hsv_1_infection;;Infected 4h before harvesting&quot; ...
+## [[1]]
+## [1] &quot;4su_treatment;;none&quot;                           
+## [2] &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;TAGGCAT&quot;                              
+## [4] &quot;hsv_1_infection;;Infected 4h before harvesting&quot;
+## [5] &quot;rna_isolation;;total RNA&quot;                      
+## [6] &quot;source_name;;HeLa cells&quot;                       
+## 
+## [1] 8
+## List of 1
+##  $ : chr [1:6] &quot;4su_treatment;;none&quot; &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;GACCAAT&quot; &quot;hsv_1_infection;;Infected 6h before harvesting&quot; ...
+## [[1]]
+## [1] &quot;4su_treatment;;none&quot;                           
+## [2] &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;GACCAAT&quot;                              
+## [4] &quot;hsv_1_infection;;Infected 6h before harvesting&quot;
+## [5] &quot;rna_isolation;;total RNA&quot;                      
+## [6] &quot;source_name;;HeLa cells&quot;                       
+## 
+## [1] 9
+## List of 1
+##  $ : chr [1:6] &quot;4su_treatment;;none&quot; &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;CTTGAAT&quot; &quot;hsv_1_infection;;Infected 6h before harvesting&quot; ...
+## [[1]]
+## [1] &quot;4su_treatment;;none&quot;                           
+## [2] &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;CTTGAAT&quot;                              
+## [4] &quot;hsv_1_infection;;Infected 6h before harvesting&quot;
+## [5] &quot;rna_isolation;;total RNA&quot;                      
+## [6] &quot;source_name;;HeLa cells&quot;                       
+## 
+## [1] 10
+## List of 1
+##  $ : chr [1:6] &quot;4su_treatment;;none&quot; &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;ATCAGAA&quot; &quot;hsv_1_infection;;Uninfected&quot; ...
+## [[1]]
+## [1] &quot;4su_treatment;;none&quot;                  
+## [2] &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot; 
+## [3] &quot;barcode;;ATCAGAA&quot;                     
+## [4] &quot;hsv_1_infection;;Uninfected&quot;          
+## [5] &quot;rna_isolation;;total RNA&quot;             
+## [6] &quot;source_name;;HeLa koBBC3as 56D2 cells&quot;
+## 
+## [1] 11
+## List of 1
+##  $ : chr [1:6] &quot;4su_treatment;;none&quot; &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;GTCAACA&quot; &quot;hsv_1_infection;;Uninfected&quot; ...
+## [[1]]
+## [1] &quot;4su_treatment;;none&quot;                  
+## [2] &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot; 
+## [3] &quot;barcode;;GTCAACA&quot;                     
+## [4] &quot;hsv_1_infection;;Uninfected&quot;          
+## [5] &quot;rna_isolation;;total RNA&quot;             
+## [6] &quot;source_name;;HeLa koBBC3as 56D2 cells&quot;
+## 
+## [1] 12
+## List of 1
+##  $ : chr [1:6] &quot;4su_treatment;;none&quot; &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;AGCTTAT&quot; &quot;hsv_1_infection;;Infected 2h before harvesting&quot; ...
+## [[1]]
+## [1] &quot;4su_treatment;;none&quot;                           
+## [2] &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;AGCTTAT&quot;                              
+## [4] &quot;hsv_1_infection;;Infected 2h before harvesting&quot;
+## [5] &quot;rna_isolation;;total RNA&quot;                      
+## [6] &quot;source_name;;HeLa koBBC3as 56D2 cells&quot;         
+## 
+## [1] 13
+## List of 1
+##  $ : chr [1:6] &quot;4su_treatment;;none&quot; &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;GTTCCGT&quot; &quot;hsv_1_infection;;Infected 2h before harvesting&quot; ...
+## [[1]]
+## [1] &quot;4su_treatment;;none&quot;                           
+## [2] &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;GTTCCGT&quot;                              
+## [4] &quot;hsv_1_infection;;Infected 2h before harvesting&quot;
+## [5] &quot;rna_isolation;;total RNA&quot;                      
+## [6] &quot;source_name;;HeLa koBBC3as 56D2 cells&quot;         
+## 
+## [1] 14
+## List of 1
+##  $ : chr [1:6] &quot;4su_treatment;;none&quot; &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;GCTACAT&quot; &quot;hsv_1_infection;;Infected 4h before harvesting&quot; ...
+## [[1]]
+## [1] &quot;4su_treatment;;none&quot;                           
+## [2] &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;GCTACAT&quot;                              
+## [4] &quot;hsv_1_infection;;Infected 4h before harvesting&quot;
+## [5] &quot;rna_isolation;;total RNA&quot;                      
+## [6] &quot;source_name;;HeLa koBBC3as 56D2 cells&quot;         
+## 
+## [1] 15
+## List of 1
+##  $ : chr [1:6] &quot;4su_treatment;;none&quot; &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;TGTCAGA&quot; &quot;hsv_1_infection;;Infected 4h before harvesting&quot; ...
+## [[1]]
+## [1] &quot;4su_treatment;;none&quot;                           
+## [2] &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;TGTCAGA&quot;                              
+## [4] &quot;hsv_1_infection;;Infected 4h before harvesting&quot;
+## [5] &quot;rna_isolation;;total RNA&quot;                      
+## [6] &quot;source_name;;HeLa koBBC3as 56D2 cells&quot;         
+## 
+## [1] 16
+## List of 1
+##  $ : chr [1:6] &quot;4su_treatment;;none&quot; &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;TTGTAAC&quot; &quot;hsv_1_infection;;Infected 6h before harvesting&quot; ...
+## [[1]]
+## [1] &quot;4su_treatment;;none&quot;                           
+## [2] &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;TTGTAAC&quot;                              
+## [4] &quot;hsv_1_infection;;Infected 6h before harvesting&quot;
+## [5] &quot;rna_isolation;;total RNA&quot;                      
+## [6] &quot;source_name;;HeLa koBBC3as 56D2 cells&quot;         
+## 
+## [1] 17
+## List of 1
+##  $ : chr [1:6] &quot;4su_treatment;;none&quot; &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;CGTCCCG&quot; &quot;hsv_1_infection;;Infected 6h before harvesting&quot; ...
+## [[1]]
+## [1] &quot;4su_treatment;;none&quot;                           
+## [2] &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;CGTCCCG&quot;                              
+## [4] &quot;hsv_1_infection;;Infected 6h before harvesting&quot;
+## [5] &quot;rna_isolation;;total RNA&quot;                      
+## [6] &quot;source_name;;HeLa koBBC3as 56D2 cells&quot;         
+## 
+## [1] 18
+## List of 1
+##  $ : chr [1:6] &quot;4su_treatment;;none&quot; &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;TCCGCAC&quot; &quot;hsv_1_infection;;Uninfected&quot; ...
+## [[1]]
+## [1] &quot;4su_treatment;;none&quot;                  
+## [2] &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot; 
+## [3] &quot;barcode;;TCCGCAC&quot;                     
+## [4] &quot;hsv_1_infection;;Uninfected&quot;          
+## [5] &quot;rna_isolation;;total RNA&quot;             
+## [6] &quot;source_name;;HeLa koBBC3as 59F8 cells&quot;
+## 
+## [1] 19
+## List of 1
+##  $ : chr [1:6] &quot;4su_treatment;;none&quot; &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;GTACGTA&quot; &quot;hsv_1_infection;;Uninfected&quot; ...
+## [[1]]
+## [1] &quot;4su_treatment;;none&quot;                  
+## [2] &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot; 
+## [3] &quot;barcode;;GTACGTA&quot;                     
+## [4] &quot;hsv_1_infection;;Uninfected&quot;          
+## [5] &quot;rna_isolation;;total RNA&quot;             
+## [6] &quot;source_name;;HeLa koBBC3as 59F8 cells&quot;
+## 
+## [1] 20
+## List of 1
+##  $ : chr [1:6] &quot;4su_treatment;;none&quot; &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;TGAAACG&quot; &quot;hsv_1_infection;;Infected 2h before harvesting&quot; ...
+## [[1]]
+## [1] &quot;4su_treatment;;none&quot;                           
+## [2] &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;TGAAACG&quot;                              
+## [4] &quot;hsv_1_infection;;Infected 2h before harvesting&quot;
+## [5] &quot;rna_isolation;;total RNA&quot;                      
+## [6] &quot;source_name;;HeLa koBBC3as 59F8 cells&quot;         
+## 
+## [1] 21
+## List of 1
+##  $ : chr [1:6] &quot;4su_treatment;;none&quot; &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;AGTGGAT&quot; &quot;hsv_1_infection;;Infected 2h before harvesting&quot; ...
+## [[1]]
+## [1] &quot;4su_treatment;;none&quot;                           
+## [2] &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;AGTGGAT&quot;                              
+## [4] &quot;hsv_1_infection;;Infected 2h before harvesting&quot;
+## [5] &quot;rna_isolation;;total RNA&quot;                      
+## [6] &quot;source_name;;HeLa koBBC3as 59F8 cells&quot;         
+## 
+## [1] 22
+## List of 1
+##  $ : chr [1:6] &quot;4su_treatment;;none&quot; &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;TGGCCTT&quot; &quot;hsv_1_infection;;Infected 4h before harvesting&quot; ...
+## [[1]]
+## [1] &quot;4su_treatment;;none&quot;                           
+## [2] &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;TGGCCTT&quot;                              
+## [4] &quot;hsv_1_infection;;Infected 4h before harvesting&quot;
+## [5] &quot;rna_isolation;;total RNA&quot;                      
+## [6] &quot;source_name;;HeLa koBBC3as 59F8 cells&quot;         
+## 
+## [1] 23
+## List of 1
+##  $ : chr [1:6] &quot;4su_treatment;;none&quot; &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;CTGATAT&quot; &quot;hsv_1_infection;;Infected 4h before harvesting&quot; ...
+## [[1]]
+## [1] &quot;4su_treatment;;none&quot;                           
+## [2] &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;CTGATAT&quot;                              
+## [4] &quot;hsv_1_infection;;Infected 4h before harvesting&quot;
+## [5] &quot;rna_isolation;;total RNA&quot;                      
+## [6] &quot;source_name;;HeLa koBBC3as 59F8 cells&quot;         
+## 
+## [1] 24
+## List of 1
+##  $ : chr [1:6] &quot;4su_treatment;;none&quot; &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;TTTCGGA&quot; &quot;hsv_1_infection;;Infected 6h before harvesting&quot; ...
+## [[1]]
+## [1] &quot;4su_treatment;;none&quot;                           
+## [2] &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;TTTCGGA&quot;                              
+## [4] &quot;hsv_1_infection;;Infected 6h before harvesting&quot;
+## [5] &quot;rna_isolation;;total RNA&quot;                      
+## [6] &quot;source_name;;HeLa koBBC3as 59F8 cells&quot;         
+## 
+## [1] 25
+## List of 1
+##  $ : chr [1:6] &quot;4su_treatment;;none&quot; &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;TTCCTTT&quot; &quot;hsv_1_infection;;Infected 6h before harvesting&quot; ...
+## [[1]]
+## [1] &quot;4su_treatment;;none&quot;                           
+## [2] &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;TTCCTTT&quot;                              
+## [4] &quot;hsv_1_infection;;Infected 6h before harvesting&quot;
+## [5] &quot;rna_isolation;;total RNA&quot;                      
+## [6] &quot;source_name;;HeLa koBBC3as 59F8 cells&quot;         
+## 
+## [1] 26
+## List of 1
+##  $ : chr [1:6] &quot;4su_treatment;;none&quot; &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot; &quot;barcode;;AGATCAT&quot; &quot;hsv_1_infection;;Infected 4h before harvesting&quot; ...
+## [[1]]
+## [1] &quot;4su_treatment;;none&quot;                           
+## [2] &quot;adapter_sequence;;GATCGGAAGAGCACACGT&quot;          
+## [3] &quot;barcode;;AGATCAT&quot;                              
+## [4] &quot;hsv_1_infection;;Infected 4h before harvesting&quot;
+## [5] &quot;rna_isolation;;total RNA&quot;                      
+## [6] &quot;source_name;;HeLa cells&quot;</code></pre>
+<p>Procesar la información como la provee SRA, expandirla, separar los atributos e incorporarlos al data frame.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="procesamiento-de-datos.html#cb12-1" tabindex="-1"></a>rse_gene_SRP102444 <span class="ot">&lt;-</span> <span class="fu">expand_sra_attributes</span>(rse_gene_SRP102444)</span>
+<span id="cb12-2"><a href="procesamiento-de-datos.html#cb12-2" tabindex="-1"></a><span class="fu">colData</span>(rse_gene_SRP102444)[</span>
+<span id="cb12-3"><a href="procesamiento-de-datos.html#cb12-3" tabindex="-1"></a>    ,</span>
+<span id="cb12-4"><a href="procesamiento-de-datos.html#cb12-4" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">&quot;^sra_attribute&quot;</span>, <span class="fu">colnames</span>(<span class="fu">colData</span>(rse_gene_SRP102444)))</span>
+<span id="cb12-5"><a href="procesamiento-de-datos.html#cb12-5" tabindex="-1"></a>]</span></code></pre></div>
+<pre><code>## DataFrame with 26 rows and 6 columns
+##            sra_attribute.4su_treatment sra_attribute.adapter_sequence
+##                            &lt;character&gt;                    &lt;character&gt;
+## SRR6116508                        none             GATCGGAAGAGCACACGT
+## SRR6116509                        none             GATCGGAAGAGCACACGT
+## SRR6116510                        none             GATCGGAAGAGCACACGT
+## SRR6116511                        none             GATCGGAAGAGCACACGT
+## SRR6116512                        none             GATCGGAAGAGCACACGT
+## ...                                ...                            ...
+## SRR6116530                        none             GATCGGAAGAGCACACGT
+## SRR6116531                        none             GATCGGAAGAGCACACGT
+## SRR6116532                        none             GATCGGAAGAGCACACGT
+## SRR6116533                        none             GATCGGAAGAGCACACGT
+## SRR6116515                        none             GATCGGAAGAGCACACGT
+##            sra_attribute.barcode sra_attribute.hsv_1_infection
+##                      &lt;character&gt;                   &lt;character&gt;
+## SRR6116508               CGATGTA                    Uninfected
+## SRR6116509               CAGATCA                    Uninfected
+## SRR6116510               TCACGAT                    Uninfected
+## SRR6116511               CAGTGAT                    Uninfected
+## SRR6116512               GATGTAT        Infected 2h before h..
+## ...                          ...                           ...
+## SRR6116530               TGGCCTT        Infected 4h before h..
+## SRR6116531               CTGATAT        Infected 4h before h..
+## SRR6116532               TTTCGGA        Infected 6h before h..
+## SRR6116533               TTCCTTT        Infected 6h before h..
+## SRR6116515               AGATCAT        Infected 4h before h..
+##            sra_attribute.rna_isolation sra_attribute.source_name
+##                            &lt;character&gt;               &lt;character&gt;
+## SRR6116508                   total RNA                HeLa cells
+## SRR6116509                   total RNA                HeLa cells
+## SRR6116510                   total RNA                HeLa cells
+## SRR6116511                   total RNA                HeLa cells
+## SRR6116512                   total RNA                HeLa cells
+## ...                                ...                       ...
+## SRR6116530                   total RNA    HeLa koBBC3as 59F8 c..
+## SRR6116531                   total RNA    HeLa koBBC3as 59F8 c..
+## SRR6116532                   total RNA    HeLa koBBC3as 59F8 c..
+## SRR6116533                   total RNA    HeLa koBBC3as 59F8 c..
+## SRR6116515                   total RNA                HeLa cells</code></pre>
+<p>Para facilitar el análisis de los datos podemos convertir a factors algunas de las columnas del data frame.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="procesamiento-de-datos.html#cb14-1" tabindex="-1"></a><span class="fu">colData</span>(rse_gene_SRP102444)<span class="sc">$</span>sra_attribute.hsv_1_infection<span class="ot">&lt;-</span><span class="fu">factor</span>(<span class="fu">colData</span>(rse_gene_SRP102444)<span class="sc">$</span>sra_attribute.hsv_1_infection)</span>
+<span id="cb14-2"><a href="procesamiento-de-datos.html#cb14-2" tabindex="-1"></a><span class="fu">colData</span>(rse_gene_SRP102444)<span class="sc">$</span>sra_attribute.source_name<span class="ot">&lt;-</span><span class="fu">factor</span>(<span class="fu">colData</span>(rse_gene_SRP102444)<span class="sc">$</span>sra_attribute.source_name)</span></code></pre></div>
+<p>Observar el resumen de las variables de interés.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="procesamiento-de-datos.html#cb15-1" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">as.data.frame</span>(<span class="fu">colData</span>(rse_gene_SRP102444)[</span>
+<span id="cb15-2"><a href="procesamiento-de-datos.html#cb15-2" tabindex="-1"></a>    ,</span>
+<span id="cb15-3"><a href="procesamiento-de-datos.html#cb15-3" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">&quot;^sra_attribute.[hsv_1_infection|source_name]&quot;</span>, <span class="fu">colnames</span>(<span class="fu">colData</span>(rse_gene_SRP102444)))</span>
+<span id="cb15-4"><a href="procesamiento-de-datos.html#cb15-4" tabindex="-1"></a>]))</span></code></pre></div>
+<pre><code>##  sra_attribute.adapter_sequence               sra_attribute.hsv_1_infection
+##  Length:26                      Infected 2h before harvesting:6            
+##  Class :character               Infected 4h before harvesting:6            
+##  Mode  :character               Infected 6h before harvesting:6            
+##                                 Uninfected                   :8            
+##  sra_attribute.rna_isolation            sra_attribute.source_name
+##  Length:26                   HeLa cells              :10         
+##  Class :character            HeLa koBBC3as 56D2 cells: 8         
+##  Mode  :character            HeLa koBBC3as 59F8 cells: 8         
+## </code></pre>
+<div id="variable-categórica" class="section level3 hasAnchor" number="4.1.1">
+<h3><span class="header-section-number">4.1.1</span> Variable categórica<a href="procesamiento-de-datos.html#variable-categórica" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Ahora los datos son más manejables, sin embargo podemos crear una variable categórica para agrupar a las células editadas con CRISPR/Cas9 de las que no lo fueron.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="procesamiento-de-datos.html#cb17-1" tabindex="-1"></a>rse_gene_SRP102444<span class="sc">$</span>edited_cell <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">ifelse</span>(rse_gene_SRP102444<span class="sc">$</span>sra_attribute.source_name<span class="sc">==</span><span class="st">&quot;HeLa cells&quot;</span>, <span class="st">&quot;not_edited&quot;</span>, <span class="st">&quot;edited&quot;</span>))</span>
+<span id="cb17-2"><a href="procesamiento-de-datos.html#cb17-2" tabindex="-1"></a><span class="fu">table</span>(rse_gene_SRP102444<span class="sc">$</span>edited_cell)</span></code></pre></div>
+<pre><code>## 
+##     edited not_edited 
+##         16         10</code></pre>
+</div>
+</div>
+<div id="filtrado" class="section level2 hasAnchor" number="4.2">
+<h2><span class="header-section-number">4.2</span> Filtrado<a href="procesamiento-de-datos.html#filtrado" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Obtener la proporción de lecturas asignadas a genes.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="procesamiento-de-datos.html#cb19-1" tabindex="-1"></a>rse_gene_SRP102444<span class="sc">$</span>assigned_gene_prop <span class="ot">&lt;-</span> rse_gene_SRP102444<span class="sc">$</span>recount_qc.gene_fc_count_all.assigned <span class="sc">/</span> rse_gene_SRP102444<span class="sc">$</span>recount_qc.gene_fc_count_all.total</span>
+<span id="cb19-2"><a href="procesamiento-de-datos.html#cb19-2" tabindex="-1"></a><span class="fu">summary</span>(rse_gene_SRP102444<span class="sc">$</span>assigned_gene_prop)</span></code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##  0.4769  0.7581  0.7831  0.7551  0.7886  0.7971</code></pre>
+<p>Observar el resumen por tipo de célula y momento de infección.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="procesamiento-de-datos.html#cb21-1" tabindex="-1"></a><span class="fu">with</span>(<span class="fu">colData</span>(rse_gene_SRP102444), <span class="fu">tapply</span>(assigned_gene_prop, edited_cell, summary))</span></code></pre></div>
+<pre><code>## $edited
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##  0.7258  0.7718  0.7856  0.7766  0.7900  0.7971 
+## 
+## $not_edited
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##  0.4769  0.7494  0.7772  0.7206  0.7842  0.7879</code></pre>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="procesamiento-de-datos.html#cb23-1" tabindex="-1"></a><span class="fu">with</span>(<span class="fu">colData</span>(rse_gene_SRP102444), <span class="fu">tapply</span>(assigned_gene_prop, sra_attribute.hsv_1_infection, summary))</span></code></pre></div>
+<pre><code>## $`Infected 2h before harvesting`
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##  0.7822  0.7841  0.7876  0.7886  0.7925  0.7971 
+## 
+## $`Infected 4h before harvesting`
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##  0.7764  0.7786  0.7826  0.7826  0.7859  0.7897 
+## 
+## $`Infected 6h before harvesting`
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##  0.7347  0.7469  0.7508  0.7544  0.7671  0.7718 
+## 
+## $Uninfected
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##  0.4769  0.6774  0.7863  0.7098  0.7888  0.7930</code></pre>
+<p>Graficar la calidad de las muestras.</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="procesamiento-de-datos.html#cb25-1" tabindex="-1"></a><span class="fu">with</span>(<span class="fu">colData</span>(rse_gene_SRP102444), <span class="fu">plot</span>(assigned_gene_prop, edited_cell))</span>
+<span id="cb25-2"><a href="procesamiento-de-datos.html#cb25-2" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="fl">0.3585</span>,<span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div>
+<p><img src="main_files/figure-html/step13-1.png" width="672" /></p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="procesamiento-de-datos.html#cb26-1" tabindex="-1"></a><span class="fu">hist</span>(rse_gene_SRP102444<span class="sc">$</span>assigned_gene_prop)</span></code></pre></div>
+<p><img src="main_files/figure-html/step13-2.png" width="672" /></p>
+<p>Dado que la calidad de todas las muestras están por encima de 0.3585 no es necesario borrar ninguna de ellas.</p>
+<p>Calcular niveles medios de expresión de los genes en las muestras.</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="procesamiento-de-datos.html#cb27-1" tabindex="-1"></a>gene_means <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(<span class="fu">assay</span>(rse_gene_SRP102444, <span class="st">&quot;counts&quot;</span>))</span>
+<span id="cb27-2"><a href="procesamiento-de-datos.html#cb27-2" tabindex="-1"></a><span class="fu">summary</span>(gene_means)</span></code></pre></div>
+<pre><code>##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+##      0.00      0.00      0.08    242.80     13.15 183949.35</code></pre>
+<p>Como se puede apreciar existe una gran cantidad de genes muy poco expresados por lo que serán eliminados del análisis para obtener mejores resultados.</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="procesamiento-de-datos.html#cb29-1" tabindex="-1"></a><span class="co"># Guardar objeto por si luego se cambia de opinión</span></span>
+<span id="cb29-2"><a href="procesamiento-de-datos.html#cb29-2" tabindex="-1"></a>rse_gene_SRP102444_unfiltered <span class="ot">&lt;-</span> rse_gene_SRP102444</span>
+<span id="cb29-3"><a href="procesamiento-de-datos.html#cb29-3" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="procesamiento-de-datos.html#cb29-4" tabindex="-1"></a><span class="co"># Eliminar genes con baja expresión</span></span>
+<span id="cb29-5"><a href="procesamiento-de-datos.html#cb29-5" tabindex="-1"></a>rse_gene_SRP102444 <span class="ot">&lt;-</span> rse_gene_SRP102444[gene_means <span class="sc">&gt;</span> <span class="fl">0.08</span>, ]</span>
+<span id="cb29-6"><a href="procesamiento-de-datos.html#cb29-6" tabindex="-1"></a></span>
+<span id="cb29-7"><a href="procesamiento-de-datos.html#cb29-7" tabindex="-1"></a><span class="co"># Visualizar dimensiones finales</span></span>
+<span id="cb29-8"><a href="procesamiento-de-datos.html#cb29-8" tabindex="-1"></a><span class="fu">dim</span>(rse_gene_SRP102444)</span></code></pre></div>
+<pre><code>## [1] 31657    26</code></pre>
+<p>Finalmente obtenemos nuestros datos filtrados, de los cuales no se eliminó ninguna muestra pero sí se eliminaron 32,199 genes con muy baja expresión.</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="procesamiento-de-datos.html#cb31-1" tabindex="-1"></a><span class="co"># Porcentaje de genes que retuvimos</span></span>
+<span id="cb31-2"><a href="procesamiento-de-datos.html#cb31-2" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">nrow</span>(rse_gene_SRP102444) <span class="sc">/</span> <span class="fu">nrow</span>(rse_gene_SRP102444_unfiltered) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>)</span></code></pre></div>
+<pre><code>## [1] 49.58</code></pre>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="cargar-datos.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="normalización.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/index.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["_main.pdf", "_main.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
